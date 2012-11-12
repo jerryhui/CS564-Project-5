@@ -139,18 +139,45 @@ const Status AttrCatalog::addInfo(AttrDesc & record)
     return status;
 }
 
-
+/***
+ * Removes the tuple from attrcat that corresponds to attribute attrName of relation.
+ *
+ * 2012/11/12 JH: First implementation.
+ ***/
 const Status AttrCatalog::removeInfo(const string & relation, 
 			       const string & attrName)
 {
-  Status status;
-  Record rec;
-  RID rid;
-  AttrDesc record;
-  HeapFileScan*  hfs;
+    Status status;
+    Record rec;
+    RID rid;
+    AttrDesc record;
+    HeapFileScan*  hfs;
 
-  if (relation.empty() || attrName.empty()) return BADCATPARM;
+    if (relation.empty() || attrName.empty()) return BADCATPARM;
 
+    bool found=false;
+        
+    hfs = new HeapFileScan(ATTRCATNAME, status);
+    if (status==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
+            while (!found && status!=FILEEOF) {
+                status = hfs->scanNext(rid);
+                if (status!=OK) break;
+             
+                if ( (status=hfs->HeapFile::getRecord(rid, rec))==OK ) {
+                    if ( relation.compare(((AttrDesc*)rec.data)->relName)==0
+                        && attrName.compare(((AttrDesc*)rec.data)->attrName)==0 ) {
+                        //remove this record
+                        status = hfs->deleteRecord();
+                        found = true;
+                    }
+                }
+            }
+        }
+    }
+    
+    delete hfs;
+    return status;
 }
 
 /***
