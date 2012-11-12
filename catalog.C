@@ -67,6 +67,8 @@ AttrCatalog::AttrCatalog(Status &status) :
  * to be done this way because a predicated HeapFileScan does not allow conjuncted predicates. 
  * Note that the tuples in attrcat are of type AttrDesc (structure given above).
  *
+ * Return: OK if successful; otherwise, error status as they were received
+ *
  * 11/12/2012 JH: First implementation.
  ***/
 const Status AttrCatalog::getInfo(const string & relation,
@@ -146,6 +148,8 @@ const Status AttrCatalog::removeInfo(const string & relation,
  * returns (by reference) descriptors for all attributes of the relation via attr, 
  * an array of AttrDesc structures,  and the count of the number of attributes in attrCnt. 
  * The attrs array is allocated by this function, but it should be deallocated by the caller.
+ *
+ * Return: OK if successful; otherwise, error status as they were received
  *
  * Assumption: info about the given relation is already in RelCat
  *
