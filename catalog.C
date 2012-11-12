@@ -116,17 +116,27 @@ const Status AttrCatalog::getInfo(const string & relation,
     return status;
 }
 
-
+/***
+ * Adds a tuple (corresponding to an attribute of a relation) to the attrcat relation.
+ *
+ * 2012/11/12 JH: First implementation.
+ ***/
 const Status AttrCatalog::addInfo(AttrDesc & record)
 {
-  RID rid;
-  InsertFileScan*  ifs;
-  Status status;
-
-
-
-
-
+    RID rid;
+    InsertFileScan*  ifs;
+    Status status;
+    Record newRec;
+    
+    ifs = new InsertFileScan(ATTRCATNAME, status);
+    if (status!=OK) return status;
+    
+    newRec.data = &record;
+    newRec.length = sizeof(record);
+    status = ifs->insertRecord(newRec, rid);
+    
+    delete ifs;     // clear memory
+    return status;
 }
 
 
