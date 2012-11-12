@@ -141,21 +141,66 @@ const Status AttrCatalog::removeInfo(const string & relation,
 
 }
 
-
+/***
+ * While getInfo() above returns the description of a single attribute, this method 
+ * returns (by reference) descriptors for all attributes of the relation via attr, 
+ * an array of AttrDesc structures,  and the count of the number of attributes in attrCnt. 
+ * The attrs array is allocated by this function, but it should be deallocated by the caller.
+ *
+ * Assumption: info about the given relation is already in RelCat
+ *
+ * 2012/11/12 JH: First implementation.
+ ***/
 const Status AttrCatalog::getRelInfo(const string & relation, 
 				     int &attrCnt,
 				     AttrDesc *&attrs)
 {
-  Status status;
-  RID rid;
-  Record rec;
-  HeapFileScan*  hfs;
+    Status status;
+    RID rid;
+    Record rec;
+    HeapFileScan*  hfs;
 
-  if (relation.empty()) return BADCATPARM;
+    if (relation.empty()) return BADCATPARM;
 
-
-
-
+    AttrDesc* iDesc;
+    RelDesc relDesc;
+    int iAttrD;
+    
+    // look up number of attributes from relation catalog
+    status = relCat->getInfo(relation, relDesc);
+    if (status!=OK) return status;
+    attrCnt = relDesc.attrCnt;
+    
+    // open AttrCatalog file
+    hfs = new HeapFileScan(ATTRCATNAME, status);
+    if (status==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
+            // allocate memory for return values
+            attrs = (AttrDesc*)malloc(attrCnt*sizeof(AttrDesc));
+            iAttrD=0;
+            
+            // scan for requested relation
+            while (status != FILEEOF && iAttrD<attrCnt) {
+                status = hfs->scanNext(rid);
+                if (status!=OK) break;
+                
+                if ( (status = hfs->HeapFile::getRecord(rid, rec))==OK ) {
+                    iDesc = (AttrDesc*)rec.data;
+                    
+                    // if found, return relation
+                    if ( relation.compare(iDesc->relName)==0 ) {
+                        *(attrs+iAttrD*sizeof(AttrDesc)) = *iDesc;
+                        iAttrD++;
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    // clear memory
+    delete hfs;
+    return status;
 }
 
 
