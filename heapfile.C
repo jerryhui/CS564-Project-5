@@ -385,8 +385,7 @@ const Status HeapFileScan::scanNext(RID& outRid)
 
 
 // returns pointer to the current record.  page is left pinned
-// and the scan logic is required to unpin the page 
-
+// and the scan logic is required to unpin the page
 const Status HeapFileScan::getRecord(Record & rec)
 {
     return curPage->getRecord(curRec, rec);

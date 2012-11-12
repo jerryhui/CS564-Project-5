@@ -13,13 +13,35 @@ const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
   if (relation.empty())
     return BADCATPARM;
 
-  Status status;
+  Status status = OK;
   Record rec;
   RID rid;
-
-
-
-
+    
+  /*  Open a scan on the relcat relation by invoking the startScan() method on itself. You want to look for the tuple whose first attribute matches the string relName. Then call scanNext() and getRecord() to get the desired tuple. Finally, you need to memcpy() the tuple out of the buffer pool into the return parameter record.
+   */
+    
+    HeapFileScan* hfs;
+    hfs = new HeapFileScan(RELCATNAME, status);
+    
+    status = RELCATNAME->startScan(0, 0, STRING, NULL, EQ);
+    if (status != OK) {return status;}
+    
+    while (status != FILEEOF)
+    {
+        status = hfs->scanNext(rid);
+        if (status != OK && status != FILEEOF) {return status;}
+        
+        status = hfs->getRecord(rec);
+        if (status != OK) {return status;}
+        
+        if (relation.compare((RelDesc)rec) == 0)
+        {
+            memcpy(record, rec, rec.length);
+            return status;
+        }
+    }
+    delete hfs;
+    //return RELNOTFOUND;
 }
 
 
@@ -28,9 +50,19 @@ const Status RelCatalog::addInfo(RelDesc & record)
   RID rid;
   InsertFileScan*  ifs;
   Status status;
+    
 
-
-
+  /*  Adds the relation descriptor contained in record to the relcat relation. RelDesc represents both the in-memory format and on-disk format of a tuple in relcat. First, create an InsertFileScan object on the relation catalog table. Next, create a record and then insert it into the relation catalog table using the method insertRecord of InsertFileScan.
+   */
+    
+    Record rec;
+    rec.data = record;
+    rec.length = sizeof(RelDesc);
+    
+    ifs = new InsertFileScan(RELCATNAME, status);
+    
+    status = ifs->insertRecord(rec, rid)
+    if (status != OK) {return status;}
 
 }
 
@@ -42,8 +74,32 @@ const Status RelCatalog::removeInfo(const string & relation)
 
   if (relation.empty()) return BADCATPARM;
 
-
-
+  /*  Remove the tuple corresponding to relName from relcat. Once again, you have to start a filter scan on relcat to locate the rid of the desired tuple. Then you can call deleteRecord() to remove it.
+   */
+    
+    Record rec;
+    
+    hfs = new HeapFileScan(RELCATNAME, status);
+    
+    status = RELCATNAME->startScan(0, 0, STRING, NULL, EQ);
+    if (status != OK) {return status;}
+    
+    while (status != FILEEOF)
+    {
+        status = hfs->scanNext(rid);
+        if (status != OK && status != FILEEOF) {return status;}
+        
+        status = hfs->getRecord(rec);
+        if (status != OK) {return status;}
+        
+        if (relation.compare((RelDesc)rec) == 0)
+        {
+            hfs->deleteRecord();
+            return status;
+        }
+    }
+    delete hfs;
+    //return RELNOTFOUND;
 }
 
 
