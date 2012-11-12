@@ -92,9 +92,9 @@ const Status AttrCatalog::getInfo(const string & relation,
         if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
 
             // scan for requested relation
-            while (!found && status != FILEEOF) {
+            while (!found) {
                 status = hfs->scanNext(rid);
-                if (status!=OK) break;
+                if (status!=OK) break;  // this includes FILEEOF
                 
                 if ( (status = hfs->HeapFile::getRecord(rid, rec))==OK ) {
                     iDesc = (AttrDesc*)rec.data;
@@ -194,9 +194,9 @@ const Status AttrCatalog::getRelInfo(const string & relation,
             iAttrD=0;
             
             // scan for requested relation
-            while (status != FILEEOF && iAttrD<attrCnt) {
+            while (iAttrD<attrCnt) {
                 status = hfs->scanNext(rid);
-                if (status!=OK) break;
+                if (status!=OK) break;  // this includes FILEEOF
                 
                 if ( (status = hfs->HeapFile::getRecord(rid, rec))==OK ) {
                     iDesc = (AttrDesc*)rec.data;
