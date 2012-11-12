@@ -69,7 +69,6 @@ AttrCatalog::AttrCatalog(Status &status) :
  *
  * 11/12/2012 JH: First implementation.
  *              Fixed bug-pass NULL into startScan's filter instead of empty string.
- *              Make sure if info is found return OK for status (not FILEEOF)
  ***/
 const Status AttrCatalog::getInfo(const string & relation,
 				  const string & attrName,
@@ -94,7 +93,7 @@ const Status AttrCatalog::getInfo(const string & relation,
             // scan for requested relation
             while (!found && status != FILEEOF) {
                 status = hfs->scanNext(rid);
-                if (status!=OK) break;  // return any other errors to caller
+                if (status!=OK) break;
                 
                 if ( (status = hfs->HeapFile::getRecord(rid, rec))==OK ) {
                     iDesc = (AttrDesc*)rec.data;
@@ -103,7 +102,6 @@ const Status AttrCatalog::getInfo(const string & relation,
                     if ( attrName.compare(iDesc->attrName)==0
                         && relation.compare(iDesc->relName)==0 ) {
                         record = *iDesc;
-                        status = OK;
                         found = true;
                     }
                 }
