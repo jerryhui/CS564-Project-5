@@ -68,6 +68,7 @@ AttrCatalog::AttrCatalog(Status &status) :
  * Note that the tuples in attrcat are of type AttrDesc (structure given above).
  *
  * 11/12/2012 JH: First implementation.
+ *              Fixed bug-pass NULL into startScan's filter instead of empty string.
  ***/
 const Status AttrCatalog::getInfo(const string & relation,
 				  const string & attrName,
@@ -87,7 +88,7 @@ const Status AttrCatalog::getInfo(const string & relation,
     // open AttrCatalog file
     hfs = new HeapFileScan(ATTRCATNAME, status);
     if (status==OK) {
-        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, NULL, EQ))==OK) {
 
             // scan for requested relation
             while (!found && status != FILEEOF) {
