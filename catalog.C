@@ -7,7 +7,9 @@ RelCatalog::RelCatalog(Status &status) :
 // nothing should be needed here
 }
 
-
+/***
+ * 2012/11/14 JH: minor syntax debug; need to return status
+ ***/
 const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
 {
   if (relation.empty())
@@ -23,7 +25,7 @@ const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
     HeapFileScan* hfs;
     hfs = new HeapFileScan(RELCATNAME, status);
     
-    status = RELCATNAME->startScan(0, 0, STRING, NULL, EQ);
+    status = hfs->startScan(0, 0, STRING, NULL, EQ);
     if (status != OK) {return status;}
     
     while (status != FILEEOF)
@@ -34,14 +36,14 @@ const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
         status = hfs->getRecord(rec);
         if (status != OK) {return status;}
         
-        if (relation.compare((RelDesc)rec) == 0)
+        if (relation.compare(((RelDesc*)rec.data)->relName) == 0)
         {
-            memcpy(record, rec, rec.length);
+            memcpy(&record, rec.data, rec.length);
             return status;
         }
     }
     delete hfs;
-    //return RELNOTFOUND;
+    return RELNOTFOUND;
 }
 
 
@@ -56,12 +58,12 @@ const Status RelCatalog::addInfo(RelDesc & record)
    */
     
     Record rec;
-    rec.data = record;
+    rec.data = &record;
     rec.length = sizeof(RelDesc);
     
     ifs = new InsertFileScan(RELCATNAME, status);
     
-    status = ifs->insertRecord(rec, rid)
+    status = ifs->insertRecord(rec, rid);
     if (status != OK) {return status;}
 
 }
