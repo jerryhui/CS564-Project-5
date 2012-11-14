@@ -69,6 +69,9 @@ const Status RelCatalog::addInfo(RelDesc & record)
     return status;
 }
 
+/***
+ * 2012/11/14 JH: minor syntax debug; need to return status
+ ***/
 const Status RelCatalog::removeInfo(const string & relation)
 {
   Status status;
@@ -84,7 +87,7 @@ const Status RelCatalog::removeInfo(const string & relation)
     
     hfs = new HeapFileScan(RELCATNAME, status);
     
-    status = RELCATNAME->startScan(0, 0, STRING, NULL, EQ);
+    status = hfs->startScan(0, 0, STRING, NULL, EQ);
     if (status != OK) {return status;}
     
     while (status != FILEEOF)
@@ -95,14 +98,14 @@ const Status RelCatalog::removeInfo(const string & relation)
         status = hfs->getRecord(rec);
         if (status != OK) {return status;}
         
-        if (relation.compare((RelDesc)rec) == 0)
+        if (relation.compare(((RelDesc*)rec.data)->relName) == 0)
         {
             hfs->deleteRecord();
             return status;
         }
     }
     delete hfs;
-    //return RELNOTFOUND;
+    return RELNOTFOUND;
 }
 
 
