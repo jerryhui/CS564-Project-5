@@ -34,7 +34,46 @@ const Status RelCatalog::help(const string & relation)
 
   if (relation.empty()) return UT_Print(RELCATNAME);
 
+    else
+    {
+        if (relation.empty()) relation = RELCATNAME;
+        
+        // get relation data
+        if ((status = relCat->getInfo(relation, rd)) != OK) return status;
 
+        // get attribute data
+        if ((status = attrCat->getRelInfo(rd.relName, attrCnt, attrs)) != OK)
+            return status;
+
+        // compute width of output columns
+
+        int *attrWidth;
+        if ((status = UT_computeWidth(attrCnt, attrs, attrWidth)) != OK)
+            return status;
+
+        //DM:  Print the relation name
+        cout << "Relation name: " << rd.relName << endl << endl;
+
+        //DM:  Print out a list of the attributes
+        int i;
+        for(i = 0; i < attrCnt; i++) {
+            printf("%-*.*s ", attrWidth[i], attrWidth[i],
+                   attrs[i].attrName);
+        }
+        printf("\n");
+
+        //DM:  Print out a line of "-" characters
+        for(i = 0; i < attrCnt; i++) {
+            for(int j = 0; j < attrWidth[i]; j++)
+                putchar('-');
+            printf("  ");
+        }
+        printf("\n");
+        
+        
+        
+        
+    }
 
   return OK;
 }

@@ -102,8 +102,10 @@ const Status UT_Print(string relation)
   if (!hfile) return INSUFMEM;
   if (status != OK) return status;
 
+    //DM:  Print the relation name
   cout << "Relation name: " << rd.relName << endl << endl;
 
+    //DM:  Print out a list of the attributes
   int i;
   for(i = 0; i < attrCnt; i++) {
     printf("%-*.*s ", attrWidth[i], attrWidth[i],
@@ -111,6 +113,7 @@ const Status UT_Print(string relation)
   }
   printf("\n");
 
+    //DM:  Print out a line of "-" characters
   for(i = 0; i < attrCnt; i++) {
     for(int j = 0; j < attrWidth[i]; j++)
       putchar('-');
@@ -124,6 +127,7 @@ const Status UT_Print(string relation)
   Record rec;
   RID rid;
 
+    //List all the tuples in the relation
   int records = 0;
   while((status = hfile->scanNext(rid)) == OK) {
     if ((status = hfile->getRecord(rec)) != OK)
