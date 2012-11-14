@@ -205,6 +205,7 @@ const Status AttrCatalog::addInfo(AttrDesc & record)
  * Removes the tuple from attrcat that corresponds to attribute attrName of relation.
  *
  * 2012/11/12 JH: First implementation.
+ * 2012/11/14 JH: Deleted unused variable.
  ***/
 const Status AttrCatalog::removeInfo(const string & relation, 
 			       const string & attrName)
@@ -212,7 +213,6 @@ const Status AttrCatalog::removeInfo(const string & relation,
     Status status;
     Record rec;
     RID rid;
-    AttrDesc record;
     HeapFileScan*  hfs;
 
     if (relation.empty() || attrName.empty()) return BADCATPARM;
@@ -253,6 +253,7 @@ const Status AttrCatalog::removeInfo(const string & relation,
  * Assumption: info about the given relation is already in RelCat
  *
  * 2012/11/12 JH: First implementation.
+ * 2012/11/14 JH: Change method of allocating attrs (use array).
  ***/
 const Status AttrCatalog::getRelInfo(const string & relation, 
 				     int &attrCnt,
@@ -279,7 +280,7 @@ const Status AttrCatalog::getRelInfo(const string & relation,
     if (status==OK) {
         if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
             // allocate memory for return values
-            attrs = (AttrDesc*)malloc(attrCnt*sizeof(AttrDesc));
+            attrs = new AttrDesc[attrCnt];
             iAttrD=0;
             
             // scan for requested relation
@@ -292,7 +293,7 @@ const Status AttrCatalog::getRelInfo(const string & relation,
                     
                     // if found, return relation
                     if ( relation.compare(iDesc->relName)==0 ) {
-                        *(attrs+iAttrD*sizeof(AttrDesc)) = *iDesc;
+                        attrs[iAttrD] = *iDesc;
                         iAttrD++;
                     }
                 }
