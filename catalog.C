@@ -46,7 +46,9 @@ const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
     return RELNOTFOUND;
 }
 
-
+/***
+ * 2012/11/14 JH: minor syntax debug; need to return status
+ ***/
 const Status RelCatalog::addInfo(RelDesc & record)
 {
   RID rid;
@@ -64,8 +66,7 @@ const Status RelCatalog::addInfo(RelDesc & record)
     ifs = new InsertFileScan(RELCATNAME, status);
     
     status = ifs->insertRecord(rec, rid);
-    if (status != OK) {return status;}
-
+    return status;
 }
 
 const Status RelCatalog::removeInfo(const string & relation)
