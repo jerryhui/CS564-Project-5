@@ -1,6 +1,11 @@
 #include "catalog.h"
 
 
+/***
+ * 2012/11/14
+ *  DM: first implementation
+ *  JH: bug fix: use strcpy to copy strings; loop variable needs initialization
+ ***/
 const Status RelCatalog::createRel(const string & relation, 
 				   const int attrCnt,
 				   const attrInfo attrList[])
@@ -24,17 +29,16 @@ const Status RelCatalog::createRel(const string & relation,
     if (status == OK) {return RELEXISTS;}
     
     //RELNOTFOUND so continue creating relation.
-    
-    rd.relName = relation;
+    strcpy(rd.relName, relation.c_str());
     rd.attrCnt = attrCnt;
     
     status = this->addInfo(rd);
     if (status != OK) {return status;}
     
-    for(int i; i < attrCnt; i ++)
+    for(int i=0; i<attrCnt; i ++)
     {
-        ad.relName = attrList[i].relName;
-        ad.attrName = attrList[i].attrName;
+        strcpy(ad.relName, attrList[i].relName);
+        strcpy(ad.attrName, attrList[i].attrName);
         ad.attrOffset = i;
         ad.attrType = attrList[i].attrType;
         ad.attrLen = attrList[i].attrLen;
