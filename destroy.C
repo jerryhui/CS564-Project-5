@@ -1,29 +1,34 @@
 #include "catalog.h"
 
-//
-// Destroys a relation. It performs the following steps:
-//
-// 	removes the catalog entry for the relation
-// 	destroys the heap file containing the tuples in the relation
-//
-// Returns:
-// 	OK on success
-// 	error code otherwise
-//
+/***
+ * Destroys a relation. It performs the following steps:
+ *
+ * removes the catalog entry for the relation
+ * destroys the heap file containing the tuples in the relation
+ *
+ * Returns:
+ *   OK on success
+ *   error code otherwise
+ *
+ * 2012/11/14 JH: First implementation.
+ ***/
 
 const Status RelCatalog::destroyRel(const string & relation)
 {
-  Status status;
+    Status status;
 
-  if (relation.empty() || 
-      relation == string(RELCATNAME) || 
-      relation == string(ATTRCATNAME))
+    if (relation.empty() || 
+        relation == string(RELCATNAME) || 
+        relation == string(ATTRCATNAME))
     return BADCATPARM;
 
-
-
-
-
+    status = removeInfo(relation);
+    if (status!=OK) return status;
+    
+    status = attrCat->dropRelation(relation);
+    if (status!=OK) return status;
+    
+    return destroyHeapFile(RELCATNAME);
 }
 
 
