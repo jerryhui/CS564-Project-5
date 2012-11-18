@@ -214,6 +214,7 @@ const Status AttrCatalog::addInfo(AttrDesc & record)
  *
  * 2012/11/12 JH: First implementation.
  * 2012/11/14 JH: Deleted unused variable.
+ * 2012/11/18 JH: Bug fix--pass NULL into startScan
  ***/
 const Status AttrCatalog::removeInfo(const string & relation,
 			       const string & attrName)
