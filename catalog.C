@@ -28,7 +28,7 @@ const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
     status = hfs->startScan(0, 0, STRING, NULL, EQ);
     if (status != OK) {return status;}
     
-    while (status != FILEEOF)
+    while (status == OK)
     {
         status = hfs->scanNext(rid);
         if (status == OK) {
