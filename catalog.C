@@ -69,6 +69,7 @@ const Status RelCatalog::addInfo(RelDesc & record)
     ifs = new InsertFileScan(RELCATNAME, status);
     
     status = ifs->insertRecord(rec, rid);
+    delete ifs;
     return status;
 }
 
