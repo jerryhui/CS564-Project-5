@@ -11,6 +11,7 @@
  *   error code otherwise
  *
  * 2012/11/14 JH: First implementation.
+ * 2012/11/18 JH: major debug--must destroy relation tuple last; remove correct file
  ***/
 
 const Status RelCatalog::destroyRel(const string & relation)
@@ -22,13 +23,13 @@ const Status RelCatalog::destroyRel(const string & relation)
         relation == string(ATTRCATNAME))
     return BADCATPARM;
 
-    status = removeInfo(relation);
-    if (status!=OK) return status;
-    
     status = attrCat->dropRelation(relation);
     if (status!=OK) return status;
     
-    return destroyHeapFile(RELCATNAME);
+    status = removeInfo(relation);
+    if (status!=OK) return status;
+    
+    return destroyHeapFile(relation);
 }
 
 
