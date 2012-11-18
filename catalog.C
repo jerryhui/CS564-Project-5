@@ -159,7 +159,7 @@ const Status AttrCatalog::getInfo(const string & relation,
     // open AttrCatalog file
     hfs = new HeapFileScan(ATTRCATNAME, status);
     if (status==OK) {
-        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, NULL, EQ))==OK) {
 
             // scan for requested relation
             while (!found) {
@@ -215,7 +215,7 @@ const Status AttrCatalog::addInfo(AttrDesc & record)
  * 2012/11/12 JH: First implementation.
  * 2012/11/14 JH: Deleted unused variable.
  ***/
-const Status AttrCatalog::removeInfo(const string & relation, 
+const Status AttrCatalog::removeInfo(const string & relation,
 			       const string & attrName)
 {
     Status status;
@@ -229,7 +229,7 @@ const Status AttrCatalog::removeInfo(const string & relation,
         
     hfs = new HeapFileScan(ATTRCATNAME, status);
     if (status==OK) {
-        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, NULL, EQ))==OK) {
             while (!found && status!=FILEEOF) {
                 status = hfs->scanNext(rid);
                 if (status!=OK) break;
@@ -286,7 +286,7 @@ const Status AttrCatalog::getRelInfo(const string & relation,
     // open AttrCatalog file
     hfs = new HeapFileScan(ATTRCATNAME, status);
     if (status==OK) {
-        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, NULL, EQ))==OK) {
             // allocate memory for return values
             attrs = new AttrDesc[attrCnt];
             iAttrD=0;
