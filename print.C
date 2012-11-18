@@ -108,7 +108,7 @@ const Status UT_Print(string relation)
     //DM:  Print out a list of the attributes
   int i;
   for(i = 0; i < attrCnt; i++) {
-    printf("%-*.*s ", attrWidth[i], attrWidth[i],
+    printf("%-*.*s ", attrWidth[i]+1, attrWidth[i],
 	   attrs[i].attrName);
   }
   printf("\n");
