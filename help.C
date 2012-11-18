@@ -36,8 +36,6 @@ const Status RelCatalog::help(const string & relation)
 
     else
     {
-        if (relation.empty()) relation = RELCATNAME;
-        
         // get relation data
         if ((status = relCat->getInfo(relation, rd)) != OK) return status;
 
