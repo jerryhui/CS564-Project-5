@@ -31,18 +31,21 @@ const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
     while (status != FILEEOF)
     {
         status = hfs->scanNext(rid);
-        if (status != OK && status != FILEEOF) {return status;}
-        
-        status = hfs->getRecord(rec);
-        if (status != OK) {return status;}
-        
-        if (relation.compare(((RelDesc*)rec.data)->relName) == 0)
-        {
-            memcpy(&record, rec.data, rec.length);
-            return status;
+        if (status == OK) {
+            status = hfs->getRecord(rec);
+            if (status != OK)
+                break;
+            
+            if (relation.compare(((RelDesc*)rec.data)->relName) == 0)
+            {
+                memcpy(&record, rec.data, rec.length);
+                delete hfs;
+                return status;
+            }
         }
     }
     delete hfs;
+    if (status != OK && status != FILEEOF) return status;
     return RELNOTFOUND;
 }
 
