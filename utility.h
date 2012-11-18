@@ -15,6 +15,7 @@
 #include <string.h>
 using namespace std;
 #include "error.h"
+#include "catalog.h"
 
 // define if debug output wanted
 
