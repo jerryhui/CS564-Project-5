@@ -132,7 +132,6 @@ AttrCatalog::AttrCatalog(Status &status) :
  * Return: OK if successful; otherwise, error status as they were received
  *
  * 11/12/2012 JH: First implementation.
- * 11/18/2012 DM: Changed "" parameter to NULL in the hfs-> start scan call
  ***/
 const Status AttrCatalog::getInfo(const string & relation,
 				  const string & attrName,
@@ -152,7 +151,7 @@ const Status AttrCatalog::getInfo(const string & relation,
     // open AttrCatalog file
     hfs = new HeapFileScan(ATTRCATNAME, status);
     if (status==OK) {
-        if ((status = hfs->startScan(0, 0, STRING, NULL, EQ))==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
 
             // scan for requested relation
             while (!found) {
@@ -183,7 +182,6 @@ const Status AttrCatalog::getInfo(const string & relation,
  * Adds a tuple (corresponding to an attribute of a relation) to the attrcat relation.
  *
  * 2012/11/12 JH: First implementation.
- 
  ***/
 const Status AttrCatalog::addInfo(AttrDesc & record)
 {
@@ -208,7 +206,6 @@ const Status AttrCatalog::addInfo(AttrDesc & record)
  *
  * 2012/11/12 JH: First implementation.
  * 2012/11/14 JH: Deleted unused variable.
- * 11/18/2012 DM: Changed "" parameter to NULL in the hfs-> start scan call
  ***/
 const Status AttrCatalog::removeInfo(const string & relation, 
 			       const string & attrName)
@@ -224,7 +221,7 @@ const Status AttrCatalog::removeInfo(const string & relation,
         
     hfs = new HeapFileScan(ATTRCATNAME, status);
     if (status==OK) {
-        if ((status = hfs->startScan(0, 0, STRING, NULL, EQ))==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
             while (!found && status!=FILEEOF) {
                 status = hfs->scanNext(rid);
                 if (status!=OK) break;
@@ -257,8 +254,6 @@ const Status AttrCatalog::removeInfo(const string & relation,
  *
  * 2012/11/12 JH: First implementation.
  * 2012/11/14 JH: Change method of allocating attrs (use array).
- * 11/18/2012 DM: Changed "" parameter to NULL in the hfs-> start scan call
-
  ***/
 const Status AttrCatalog::getRelInfo(const string & relation, 
 				     int &attrCnt,
@@ -283,7 +278,7 @@ const Status AttrCatalog::getRelInfo(const string & relation,
     // open AttrCatalog file
     hfs = new HeapFileScan(ATTRCATNAME, status);
     if (status==OK) {
-        if ((status = hfs->startScan(0, 0, STRING, NULL, EQ))==OK) {
+        if ((status = hfs->startScan(0, 0, STRING, "", EQ))==OK) {
             // allocate memory for return values
             attrs = new AttrDesc[attrCnt];
             iAttrD=0;
