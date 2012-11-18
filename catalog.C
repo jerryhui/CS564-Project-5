@@ -93,21 +93,24 @@ const Status RelCatalog::removeInfo(const string & relation)
     status = hfs->startScan(0, 0, STRING, NULL, EQ);
     if (status != OK) {return status;}
     
-    while (status != FILEEOF)
+    while (status == OK)
     {
         status = hfs->scanNext(rid);
-        if (status != OK && status != FILEEOF) {return status;}
-        
-        status = hfs->getRecord(rec);
-        if (status != OK) {return status;}
-        
-        if (relation.compare(((RelDesc*)rec.data)->relName) == 0)
-        {
-            hfs->deleteRecord();
-            return status;
+        if (status == OK) {
+            status = hfs->getRecord(rec);
+            if (status != OK)
+                break;
+            
+            if (relation.compare(((RelDesc*)rec.data)->relName) == 0)
+            {
+                hfs->deleteRecord();
+                delete hfs;
+                return status;
+            }
         }
     }
     delete hfs;
+    if (status != OK && status != FILEEOF) return status;
     return RELNOTFOUND;
 }
 
