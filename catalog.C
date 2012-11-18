@@ -9,6 +9,7 @@ RelCatalog::RelCatalog(Status &status) :
 
 /***
  * 2012/11/14 JH: minor syntax debug; need to return status
+ * 2012/11/18 JH,DM: debug within while loop--fixed memory leaks
  ***/
 const Status RelCatalog::getInfo(const string & relation, RelDesc &record)
 {
