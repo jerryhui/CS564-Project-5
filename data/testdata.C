@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
+
 int errno;
+using namespace std;
 
 typedef struct {
   int unique1;
@@ -12,14 +14,15 @@ typedef struct {
 } Rels;
 
 
-main()
+int main()
 {
   FILE *fp;
+    int i;
   
   fp = fopen("rel500.data","r");
 
   Rels rel;
-  for (int i = 0; i < 500; i++) {    
+  for (i = 0; i < 500; i++) {    
 	if (fread((char*)&rel, sizeof(rel), 1, fp) < 1)
 		fprintf(stderr, "Error in reading file\n");
     	cout << rel.unique1 << "\t" << rel.unique2 << "\t"
@@ -40,4 +43,5 @@ main()
   }        
   fclose(fp);
 
+    return (1);
 }

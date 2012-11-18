@@ -27,6 +27,9 @@ const Status UT_Load(const string & relation,
 
 const Status UT_Print(string relation);
 
+const Status UT_computeWidth(const int attrCnt,
+                             const AttrDesc attrs[],
+                             int *&attrWidth);
 void   UT_Quit(void);
 
 #endif
