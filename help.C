@@ -62,7 +62,7 @@ const Status RelCatalog::help(const string & relation)
         printf("----------------------- ------- ------- --------\n");
         
         
-        string typeArray[3] = {"string", "integer", "float"};
+        string typeArray[3] = {"string", "integer", "float", ""};
         
          //DM:  Print out a list of the attributes
         int i;
