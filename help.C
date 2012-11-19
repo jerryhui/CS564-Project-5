@@ -56,33 +56,19 @@ const Status RelCatalog::help(const string & relation)
         cout << "Relation name: " << rd.relName << endl << endl;
 
         
-    
-        
         printf("name                    type    length  offset  \n");
         printf("----------------------- ------- ------- --------\n");
         
-        
-        string typeArray[4] = {"string", "integer", "float", ""};
-        
-         //DM:  Print out a list of the attributes
+        //DM:  Print out the Attribute metadata
         int i;
-        for(i = 0; i < attrCnt; i++) {
-            printf("%-25.25s %-7s %7d %8d\n", attrs[i].attrName, typeArray[attrs[i].attrType], attrs[i].attrLen, attrs[i].attrOffset);
-        }
-        printf("\n");
-        
-        /*
-        //DM:  Print out a line of "-" characters
-        for(i = 0; i < attrCnt; i++) {
-            for(int j = 0; j < attrWidth[i]; j++)
-                putchar('-');
-            printf("  ");
-        }
-        printf("\n");
-        */
-        
-        
-        
+        for(i = 0; i < attrCnt; i++)
+        {
+            printf("%-25.25s %-7s %7d %8d\n", attrs[i].attrName,
+                   ( (attrs[i].attrType==0) ? "string" :
+                    (attrs[i].attrType==1) ? "integer" : "float" ),
+                   attrs[i].attrLen,
+                   attrs[i].attrOffset);
+        }    
     }
 
   return OK;
