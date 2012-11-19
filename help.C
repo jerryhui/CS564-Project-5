@@ -45,21 +45,33 @@ const Status RelCatalog::help(const string & relation)
 
         // compute width of output columns
 
+        /*
         int *attrWidth;
         if ((status = UT_computeWidth(attrCnt, attrs, attrWidth)) != OK)
             return status;
+         */
+        
 
         //DM:  Print the relation name
         cout << "Relation name: " << rd.relName << endl << endl;
 
-        //DM:  Print out a list of the attributes
+        
+    
+        
+        printf("name                    type    length  offset  \n");
+        printf("----------------------- ------- ------- --------\n");
+        
+        
+        string typeArray[3] = {"string", "integer", "float"};
+        
+         //DM:  Print out a list of the attributes
         int i;
         for(i = 0; i < attrCnt; i++) {
-            printf("%-*.*s ", attrWidth[i]+1, attrWidth[i],
-                   attrs[i].attrName);
+            printf("%-25.25s %-7s %7d %8d\n", attrs[i].attrName, typeArray[attrs[i].attrType], attrs[i].attrLen, attrs[i].attrOffset);
         }
         printf("\n");
-
+        
+        /*
         //DM:  Print out a line of "-" characters
         for(i = 0; i < attrCnt; i++) {
             for(int j = 0; j < attrWidth[i]; j++)
@@ -67,7 +79,7 @@ const Status RelCatalog::help(const string & relation)
             printf("  ");
         }
         printf("\n");
-        
+        */
         
         
         
