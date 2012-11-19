@@ -63,7 +63,7 @@ const Status RelCatalog::help(const string & relation)
         int i;
         for(i = 0; i < attrCnt; i++)
         {
-            printf("%-25.25s %-7s %7d %8d\n", attrs[i].attrName,
+            printf("%-23.23s %-7s %7d %8d\n", attrs[i].attrName,
                    ( (attrs[i].attrType==0) ? "string" :
                     (attrs[i].attrType==1) ? "integer" : "float" ),
                    attrs[i].attrLen,
